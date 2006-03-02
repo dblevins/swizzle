@@ -77,6 +77,18 @@ public class ReplaceStringInputStreamTest extends TestCase {
         original = "BAR some FOO BAR test FOO";
         expected = "orange some apple orange test apple";
         swizzleAndAssert2(original, expected);
+        
+        original = "package org.apache.maven.archetype;";
+        expected = "package ${package};";
+
+        InputStream in = TestUtil.stringToStream(original);
+        in = new ReplaceStringInputStream(in, "org.apache.maven.archetype", "${package}");
+        String actual = TestUtil.streamToString(in);
+        
+        System.out.println( "expected -> " + expected );
+        System.out.println( "  actual -> " + actual );        
+        
+        assertEquals(expected, actual);        
     }
 
     private void swizzleAndAssert(String original, String expected) throws IOException {
