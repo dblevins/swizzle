@@ -3,17 +3,14 @@ package org.codehaus.swizzle;
  * @version $Revision$ $Date$
  */
 
-import junit.framework.*;
-import org.codehaus.swizzle.LinkFilterInputStream;
+import junit.framework.TestCase;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 public class LinkFilterInputStreamTest extends TestCase {
-    LinkFilterInputStream linkFilterInputStream;
 
     public void testLinkFilterInputStream1() throws Exception {
         URL url = new URL("http://swizzle.codehaus.org/stuff/");
@@ -23,7 +20,7 @@ public class LinkFilterInputStreamTest extends TestCase {
 
         String actual = resolveURLs(original, url);
 
-        assertEquals(exptected,actual);
+        assertEquals(exptected, actual);
     }
 
     public void testLinkFilterInputStream2() throws Exception {
@@ -34,7 +31,7 @@ public class LinkFilterInputStreamTest extends TestCase {
 
         String actual = resolveURLs(original, url);
 
-        assertEquals(exptected,actual);
+        assertEquals(exptected, actual);
     }
 
     public void testLinkFilterInputStream3() throws Exception {
@@ -45,9 +42,8 @@ public class LinkFilterInputStreamTest extends TestCase {
 
         String actual = resolveURLs(original, url);
 
-        assertEquals(exptected,actual);
+        assertEquals(exptected, actual);
     }
-
 
 
     private String resolveURLs(String original, URL url) throws IOException {
