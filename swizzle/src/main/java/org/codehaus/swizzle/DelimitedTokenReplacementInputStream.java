@@ -19,26 +19,26 @@ package org.codehaus.swizzle;
 import java.io.FilterInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.Map;
 
-public class TokenizingFilterInputStream extends FilterInputStream {
+public class DelimitedTokenReplacementInputStream extends FilterInputStream {
 
     private final ScanBuffer beginBuffer;
     private final ScanBuffer endBuffer;
-    private ScanBuffer valueBuffer;
-    private final TokenizedStreamHandler tokenHandler;
+    private InputStream value;
+    private final StreamTokenHandler handler;
 
-    public TokenizingFilterInputStream(InputStream in, String begin, String end, TokenizedStreamHandler tokenHandler) {
+    public DelimitedTokenReplacementInputStream(InputStream in, String begin, String end, StreamTokenHandler tokenHandler) {
         super(in);
-        this.tokenHandler = tokenHandler;
+        this.handler = tokenHandler;
 
         beginBuffer = new ScanBuffer(begin);
         endBuffer = new ScanBuffer(end);
-        valueBuffer = new ScanBuffer(1000);
 
         strategy = lookingForToken;
     }
 
-    private TokenizingFilterInputStream.StreamReadingStrategy strategy;
+    private DelimitedTokenReplacementInputStream.StreamReadingStrategy strategy;
 
     public int read() throws IOException {
         return strategy._read();
@@ -51,7 +51,7 @@ public class TokenizingFilterInputStream extends FilterInputStream {
         int _read() throws IOException;
     }
 
-    private final TokenizingFilterInputStream.StreamReadingStrategy readingToken = new TokenizingFilterInputStream.StreamReadingStrategy() {
+    private final DelimitedTokenReplacementInputStream.StreamReadingStrategy readingToken = new DelimitedTokenReplacementInputStream.StreamReadingStrategy() {
         public int _read() throws IOException {
             endBuffer.flush();
             StringBuffer token = new StringBuffer();
@@ -77,22 +77,16 @@ public class TokenizingFilterInputStream extends FilterInputStream {
                 }
             }
 
-            String value = tokenHandler.tokenFound(token.toString());
-
-            valueBuffer = new ScanBuffer(value.length());
-            char[] chars = value.toCharArray();
-            for (int i = 0; i < chars.length; i++) {
-                valueBuffer.append(chars[i]);
-            }
-
+            value = handler.processToken(token.toString());
             strategy = flushingValue;
+
             return strategy._read();
         }
     };
 
-    private final TokenizingFilterInputStream.StreamReadingStrategy flushingValue = new TokenizingFilterInputStream.StreamReadingStrategy() {
+    private final DelimitedTokenReplacementInputStream.StreamReadingStrategy flushingValue = new DelimitedTokenReplacementInputStream.StreamReadingStrategy() {
         public int _read() throws IOException {
-            int i = valueBuffer.append(-1);
+            int i = value.read();
             if (i == -1) {
                 strategy = lookingForToken;
                 i = strategy._read();
@@ -101,7 +95,7 @@ public class TokenizingFilterInputStream extends FilterInputStream {
         }
     };
 
-    private final TokenizingFilterInputStream.StreamReadingStrategy lookingForToken = new TokenizingFilterInputStream.StreamReadingStrategy() {
+    private final DelimitedTokenReplacementInputStream.StreamReadingStrategy lookingForToken = new DelimitedTokenReplacementInputStream.StreamReadingStrategy() {
         public int _read() throws IOException {
             int stream = superRead();
             int buffer = beginBuffer.append(stream);

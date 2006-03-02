@@ -19,17 +19,18 @@ package org.codehaus.swizzle;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 
-public class TokenFilterInputStream extends FilterInputStream {
+public class FixedTokenReplacementInputStream extends FilterInputStream {
 
     private final ScanBuffer tokenBuffer;
-    private final ScanBuffer valueBuffer;
+    private final StreamTokenHandler handler;
+    private InputStream value;
 
-    public TokenFilterInputStream(InputStream in, String key, String value) {
+    public FixedTokenReplacementInputStream(InputStream in, String token, StreamTokenHandler handler) {
         super(in);
-        tokenBuffer = new ScanBuffer(key);
-        valueBuffer = new ScanBuffer(value);
-
+        tokenBuffer = new ScanBuffer(token);
+        this.handler = handler;
         strategy = lookingForToken;
     }
 
@@ -48,7 +49,7 @@ public class TokenFilterInputStream extends FilterInputStream {
 
     private final StreamReadingStrategy flushingValue = new StreamReadingStrategy() {
         public int _read() throws IOException {
-            int i = valueBuffer.append(-1);
+            int i = value.read();
             if (i == -1) {
                 strategy = lookingForToken;
                 i = strategy._read();
@@ -65,12 +66,10 @@ public class TokenFilterInputStream extends FilterInputStream {
             if (tokenBuffer.match()) {
                 tokenBuffer.flush();
 
-                char[] value = valueBuffer.getScanString().toCharArray();
-                for (int i = 0; i < value.length; i++) {
-                    valueBuffer.append(value[i]);
-                }
-
+                String token = tokenBuffer.getScanString();
+                value = handler.processToken(token);
                 strategy = flushingValue;
+
                 return (buffer == -1 && stream != -1) ? read() : buffer;
             }
 

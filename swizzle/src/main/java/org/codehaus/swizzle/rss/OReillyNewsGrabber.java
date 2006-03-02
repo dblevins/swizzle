@@ -19,7 +19,7 @@ package org.codehaus.swizzle.rss;
 import org.codehaus.swizzle.rss.NewsGrabber;
 import org.codehaus.swizzle.IncludeFilterInputStream;
 import org.codehaus.swizzle.ExcludeFilterInputStream;
-import org.codehaus.swizzle.LinkFilterInputStream;
+import org.codehaus.swizzle.ResolveUrlInputStream;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -60,8 +60,8 @@ public class OReillyNewsGrabber implements NewsGrabber {
         in = new ExcludeFilterInputStream(in, "<SCRIPT", "</SCRIPT>");
         in = new ExcludeFilterInputStream(in, "<NOSCRIPT", "</NOSCRIPT>");
         in = new ExcludeFilterInputStream(in, "<IFRAME", "</IFRAME>");
-        in = new LinkFilterInputStream(in, "<A HREF=", ">", url);
-        in = new LinkFilterInputStream(in, "SRC=\"", "\"", url);
+        in = new ResolveUrlInputStream(in, "<A HREF=", ">", url);
+        in = new ResolveUrlInputStream(in, "SRC=\"", "\"", url);
 
         try {
             while ((b = in.read()) != -1) {

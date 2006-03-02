@@ -17,9 +17,12 @@
 
 package org.codehaus.swizzle;
 
+import java.io.InputStream;
+import java.io.IOException;
+
 /**
  * @version $Revision$ $Date$
  */
-public interface TokenizedStreamHandler {
-    public String tokenFound(String token);
+public interface StreamTokenHandler {
+    public InputStream processToken(String token) throws IOException;
 }

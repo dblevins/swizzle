@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class TokenFilterInputStreamTest extends TestCase {
+public class ReplaceStringInputStreamTest extends TestCase {
 
     public void testTokenFilterInputStream() throws Exception {
         String original = "";
@@ -82,7 +82,7 @@ public class TokenFilterInputStreamTest extends TestCase {
     private void swizzleAndAssert(String original, String expected) throws IOException {
         InputStream in = TestUtil.stringToStream(original);
 
-        in = new TokenFilterInputStream(in, "FOO", "apple");
+        in = new ReplaceStringInputStream(in, "FOO", "apple");
 
         String actual = TestUtil.streamToString(in);
 
@@ -92,8 +92,8 @@ public class TokenFilterInputStreamTest extends TestCase {
     private void swizzleAndAssert2(String original, String expected) throws IOException {
         InputStream in = TestUtil.stringToStream(original);
 
-        in = new TokenFilterInputStream(in, "FOO", "apple");
-        in = new TokenFilterInputStream(in, "BAR", "orange");
+        in = new ReplaceStringInputStream(in, "FOO", "apple");
+        in = new ReplaceStringInputStream(in, "BAR", "orange");
 
         String actual = TestUtil.streamToString(in);
 

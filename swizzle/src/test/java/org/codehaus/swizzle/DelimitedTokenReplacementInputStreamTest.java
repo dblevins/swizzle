@@ -25,9 +25,9 @@ import junit.framework.TestCase;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class TokenizingFilterInputStreamTest extends TestCase {
+public class DelimitedTokenReplacementInputStreamTest extends TestCase {
 
-    TokenizedStreamHandler reversingHandler = new TestTokenHandler();
+    StreamTokenHandler testTokenHandler = new TestTokenHandler();
 
 
     public void testTokenizingFilterInputStream() throws Exception {
@@ -101,14 +101,14 @@ public class TokenizingFilterInputStreamTest extends TestCase {
 
     private void swizzleAndAssert(String original, String expected) throws IOException {
         InputStream in = TestUtil.stringToStream(original);
-        in = new TokenizingFilterInputStream(in, "{", "}", reversingHandler);
+        in = new DelimitedTokenReplacementInputStream(in, "{", "}", testTokenHandler);
         String actual = TestUtil.streamToString(in);
 
         assertEquals(expected, actual);
     }
 
-    private static class TestTokenHandler implements TokenizedStreamHandler {
-        public String tokenFound(String token) {
+    private static class TestTokenHandler extends StringTokenHandler {
+        public String handleToken(String token) {
             if (token.equals("FOO")) {
                 return "apple";
             } else if (token.equals("BAR")) {
@@ -116,7 +116,6 @@ public class TokenizingFilterInputStreamTest extends TestCase {
             } else {
                 return token;
             }
-
         }
     }
 }

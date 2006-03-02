@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-public class LinkFilterInputStreamTest extends TestCase {
+public class ResolveUrlInputStreamTest extends TestCase {
 
     public void testLinkFilterInputStream1() throws Exception {
         URL url = new URL("http://swizzle.codehaus.org/stuff/");
@@ -63,8 +63,8 @@ public class LinkFilterInputStreamTest extends TestCase {
 
     private String resolveURLs(String original, URL url) throws IOException {
         InputStream in = TestUtil.stringToStream(original);
-        in = new LinkFilterInputStream(in, "<A HREF=", ">", url);
-        in = new LinkFilterInputStream(in, "SRC=\"", "\"", url);
+        in = new ResolveUrlInputStream(in, "<A HREF=", ">", url);
+        in = new ResolveUrlInputStream(in, "SRC=\"", "\"", url);
 
         return TestUtil.streamToString(in);
     }
