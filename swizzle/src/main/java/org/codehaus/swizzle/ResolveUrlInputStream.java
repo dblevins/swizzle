@@ -23,7 +23,7 @@ import java.net.URL;
 public class ResolveUrlInputStream extends DelimitedTokenReplacementInputStream {
 
     public ResolveUrlInputStream(InputStream in, String begin, String end, URL url) {
-        super(in, begin, end, new UrlResolver(begin, end, url));
+        super(in, begin, end, new UrlResolver(begin, end, url), false);
     }
 
     public static class UrlResolver extends StringTokenHandler {

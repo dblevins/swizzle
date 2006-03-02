@@ -29,11 +29,15 @@ public class DelimitedTokenReplacementInputStream extends FilterInputStream {
     private final StreamTokenHandler handler;
 
     public DelimitedTokenReplacementInputStream(InputStream in, String begin, String end, StreamTokenHandler tokenHandler) {
+        this(in, begin, end, tokenHandler, true);
+    }
+    
+    public DelimitedTokenReplacementInputStream(InputStream in, String begin, String end, StreamTokenHandler tokenHandler, boolean caseSensitive) {
         super(in);
         this.handler = tokenHandler;
 
-        beginBuffer = new ScanBuffer(begin);
-        endBuffer = new ScanBuffer(end);
+        beginBuffer = new ScanBuffer(begin, caseSensitive);
+        endBuffer = new ScanBuffer(end, caseSensitive);
 
         strategy = lookingForToken;
     }

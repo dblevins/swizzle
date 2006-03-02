@@ -40,6 +40,10 @@ public class ScanBuffer {
         setScanString(scanString, caseSensitive);
     }
 
+    public int size() {
+        return buffer.length;
+    }
+    
     public void resetPosition() {
         pos = 0;
     }
@@ -122,6 +126,18 @@ public class ScanBuffer {
 //       }
 
         return true;
+    }
+
+    public boolean hasData() {
+        int apos = token.length - 1;
+        int rpos = pos - 1;
+        for (; rpos > -1 && apos > -1; rpos--, apos--) {
+            if (buffer2[rpos] != -1) return true;
+        }
+        for (rpos = buffer2.length - 1; apos > -1; rpos--, apos--) {
+            if (buffer2[rpos] != -1) return true;
+        }
+        return false;
     }
 
     private void log(String str) {

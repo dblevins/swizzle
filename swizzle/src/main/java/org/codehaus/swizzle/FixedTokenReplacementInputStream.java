@@ -28,8 +28,12 @@ public class FixedTokenReplacementInputStream extends FilterInputStream {
     private InputStream value;
 
     public FixedTokenReplacementInputStream(InputStream in, String token, StreamTokenHandler handler) {
+        this(in, token, handler, true);
+    }
+
+    public FixedTokenReplacementInputStream(InputStream in, String token, StreamTokenHandler handler, boolean caseSensitive) {
         super(in);
-        tokenBuffer = new ScanBuffer(token);
+        tokenBuffer = new ScanBuffer(token, caseSensitive);
         this.handler = handler;
         strategy = lookingForToken;
     }
@@ -52,7 +56,7 @@ public class FixedTokenReplacementInputStream extends FilterInputStream {
             int i = value.read();
             if (i == -1) {
                 strategy = lookingForToken;
-                i = strategy._read();
+                i = read();
             }
             return i;
         }
@@ -70,7 +74,8 @@ public class FixedTokenReplacementInputStream extends FilterInputStream {
                 value = handler.processToken(token);
                 strategy = flushingValue;
 
-                return (buffer == -1 && stream != -1) ? read() : buffer;
+                int i = (buffer == -1 && stream != -1) ? read() : buffer;
+                return i;
             }
 
             // Have we just started?
@@ -79,7 +84,8 @@ public class FixedTokenReplacementInputStream extends FilterInputStream {
             // data coming from the stream is valid, we
             // need to just keep reading till the buffer
             // gives us good data.
-            return (buffer == -1 && stream != -1) ? _read() : buffer;
+            int i = (buffer == -1 && tokenBuffer.hasData()) ? _read() : buffer;
+            return i;
         }
     };
 

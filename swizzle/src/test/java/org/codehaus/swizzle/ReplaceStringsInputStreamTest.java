@@ -1,14 +1,19 @@
-package org.codehaus.swizzle;
-/**
- * @version $Revision$ $Date$
+/* =====================================================================
+ *
+ * Copyright (c) 2003 David Blevins.  All rights reserved.
+ *
+ * =====================================================================
  */
+package org.codehaus.swizzle;
 
 import junit.framework.TestCase;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
+import java.util.Map;
+import java.util.HashMap;
 
-public class ReplaceStringInputStreamTest extends TestCase {
+public class ReplaceStringsInputStreamTest extends TestCase {
 
     public void testTokenFilterInputStream() throws Exception {
         String original = "";
@@ -76,15 +81,15 @@ public class ReplaceStringInputStreamTest extends TestCase {
 
         original = "BAsome FOOO text";
         expected = "BAsome appleO text";
-        swizzleAndAssert2(original, expected);
+        swizzleAndAssert(original, expected);
 
         original = "BARFOOFOOBAR text";
         expected = "orangeappleappleorange text";
-        swizzleAndAssert2(original, expected);
+        swizzleAndAssert(original, expected);
 
         original = "BAR some FOO BAR test FOO";
         expected = "orange some apple orange test apple";
-        swizzleAndAssert2(original, expected);
+        swizzleAndAssert(original, expected);
 
         original = "package org.apache.maven.archetype;";
         expected = "package ${package};";
@@ -99,18 +104,10 @@ public class ReplaceStringInputStreamTest extends TestCase {
     private void swizzleAndAssert(String original, String expected) throws IOException {
         InputStream in = TestUtil.stringToStream(original);
 
-        in = new ReplaceStringInputStream(in, "FOO", "apple");
-
-        String actual = TestUtil.streamToString(in);
-
-        assertEquals(expected, actual);
-    }
-
-    private void swizzleAndAssert2(String original, String expected) throws IOException {
-        InputStream in = TestUtil.stringToStream(original);
-
-        in = new ReplaceStringInputStream(in, "FOO", "apple");
-        in = new ReplaceStringInputStream(in, "BAR", "orange");
+        Map strings = new HashMap();
+        strings.put("FOO", "apple");
+        strings.put("BAR", "orange");
+        in = new ReplaceStringsInputStream(in, strings);
 
         String actual = TestUtil.streamToString(in);
 
