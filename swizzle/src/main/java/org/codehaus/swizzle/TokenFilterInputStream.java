@@ -15,10 +15,10 @@ public class TokenFilterInputStream extends FilterInputStream {
     private final ScanBuffer tokenBuffer;
     private final ScanBuffer valueBuffer;
 
-    public TokenFilterInputStream(InputStream in, String begin, String end) {
+    public TokenFilterInputStream(InputStream in, String key, String value) {
         super(in);
-        tokenBuffer = new ScanBuffer(begin);
-        valueBuffer = new ScanBuffer(end);
+        tokenBuffer = new ScanBuffer(key);
+        valueBuffer = new ScanBuffer(value);
 
         strategy = lookingForToken;
     }
