@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+// TODO: Replace with TokenizingFilterInputStream which is just this code minus the URL munging
 public class LinkFilterInputStream extends FilterInputStream {
 
     private final URL url;
