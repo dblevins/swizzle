@@ -28,7 +28,7 @@ public class LinkFilterInputStream extends FilterInputStream {
     private final ScanBuffer endBuffer;
     private ScanBuffer urlBuffer;
 
-    public LinkFilterInputStream(InputStream in, String begin, String end, URL url) throws IOException {
+    public LinkFilterInputStream(InputStream in, String begin, String end, URL url) {
         super(in);
         this.url = url;
 
@@ -36,23 +36,23 @@ public class LinkFilterInputStream extends FilterInputStream {
         endBuffer = new ScanBuffer(end);
         urlBuffer = new ScanBuffer(1000);
 
-        reader = lookingForURL;
+        strategy = lookingForURL;
     }
 
-    StreamReader reader;
+    private StreamReadingStrategy strategy;
 
     public int read() throws IOException {
-        return reader._read();
+        return strategy._read();
     }
 
     // reading url (looking for end)
     // flushing url
     // regular read (looking for begin)
-    interface StreamReader {
+    interface StreamReadingStrategy {
         int _read() throws IOException;
     }
 
-    StreamReader readingURL = new StreamReader() {
+    private final StreamReadingStrategy readingURL = new StreamReadingStrategy() {
         public int _read() throws IOException {
             endBuffer.flush();
             StringBuffer link = new StringBuffer();
@@ -67,8 +67,8 @@ public class LinkFilterInputStream extends FilterInputStream {
                     continue;
                 } else if (buffer == -1 && stream == -1) {
                     endBuffer.resetPosition();
-                    reader = flushingURL;
-                    return reader._read();
+                    strategy = flushingURL;
+                    return strategy._read();
                 }
                 link.append((char) buffer);
                 if (endBuffer.match()) {
@@ -98,23 +98,23 @@ public class LinkFilterInputStream extends FilterInputStream {
             }
             urlBuffer.resetPosition();
 
-            reader = flushingURL;
-            return reader._read();
+            strategy = flushingURL;
+            return strategy._read();
         }
     };
 
-    StreamReader flushingURL = new StreamReader() {
+    private final StreamReadingStrategy flushingURL = new StreamReadingStrategy() {
         public int _read() throws IOException {
             int i = urlBuffer.append(-1);
             if (i == -1) {
-                reader = lookingForURL;
-                i = reader._read();
+                strategy = lookingForURL;
+                i = strategy._read();
             }
             return i;
         }
     };
 
-    StreamReader lookingForURL = new StreamReader() {
+    private final StreamReadingStrategy lookingForURL = new StreamReadingStrategy() {
         public int _read() throws IOException {
             int stream = superRead();
             int buffer = beginBuffer.append(stream);
@@ -122,7 +122,7 @@ public class LinkFilterInputStream extends FilterInputStream {
             if (beginBuffer.match()) {
                 beginBuffer.flush();
 
-                reader = readingURL;
+                strategy = readingURL;
                 //return reader._read();
                 return buffer;
             }

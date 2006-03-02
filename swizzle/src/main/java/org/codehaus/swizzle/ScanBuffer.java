@@ -81,7 +81,9 @@ public class ScanBuffer {
     }
 
     public void flush() {
+        char NULL = (char) -1;
         for (int i = 0; i < buffer.length; i++) {
+            buffer[i] = NULL;
             buffer2[i] = -1;
         }
         resetPosition();

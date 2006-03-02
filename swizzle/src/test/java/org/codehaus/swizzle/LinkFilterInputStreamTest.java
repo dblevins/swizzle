@@ -5,7 +5,6 @@ package org.codehaus.swizzle;
 
 import junit.framework.TestCase;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -47,19 +46,11 @@ public class LinkFilterInputStreamTest extends TestCase {
 
 
     private String resolveURLs(String original, URL url) throws IOException {
-        InputStream in = new ByteArrayInputStream(original.getBytes());
+        InputStream in = TestUtil.stringToStream(original);
         in = new LinkFilterInputStream(in, "<A HREF=", ">", url);
         in = new LinkFilterInputStream(in, "SRC=\"", "\"", url);
 
-        StringBuffer text = new StringBuffer();
-        try {
-            int b;
-            while ((b = in.read()) != -1) {
-                text.append((char) b);
-            }
-        } finally {
-            in.close();
-        }
-        return text.toString();
+        return TestUtil.streamToString(in);
     }
+
 }
