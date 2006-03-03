@@ -16,7 +16,7 @@ public class FixedTokenListReplacementInputStream extends FilterInputStream {
     private final StreamTokenHandler handler;
     private InputStream value;
     private final ScanBuffer[] tokenBuffers;
-    private final ScanBuffer largestBuffer;
+    private final ScanBuffer mainBuffer;
 
     public FixedTokenListReplacementInputStream(InputStream in, List tokens, StreamTokenHandler handler) {
         this(in, tokens, handler, true);
@@ -24,15 +24,15 @@ public class FixedTokenListReplacementInputStream extends FilterInputStream {
 
     public FixedTokenListReplacementInputStream(InputStream in, List tokens, StreamTokenHandler handler, boolean caseSensitive) {
         super(in);
-        ScanBuffer largestBuffer = new ScanBuffer("", caseSensitive);
+        int largestBuffer = 0;
         tokenBuffers = new ScanBuffer[tokens.size()];
         for (int i = 0; i < tokens.size(); i++) {
             String token = (String) tokens.get(i);
             ScanBuffer buffer = new ScanBuffer(token, caseSensitive);
             tokenBuffers[i] = buffer;
-            largestBuffer = (buffer.size() > largestBuffer.size())? buffer: largestBuffer;
+            largestBuffer = (buffer.size() > largestBuffer)? buffer.size(): largestBuffer;
         }
-        this.largestBuffer = largestBuffer;
+        this.mainBuffer = new ScanBuffer(largestBuffer);
         this.handler = handler;
         strategy = lookingForToken;
     }
@@ -55,29 +55,51 @@ public class FixedTokenListReplacementInputStream extends FilterInputStream {
             int i = value.read();
             if (i == -1) {
                 strategy = lookingForToken;
-                i = strategy._read();
+                i = read();
             }
             return i;
+        }
+    };
+
+    private final StreamReadingStrategy flushingMainBuffer = new StreamReadingStrategy() {
+        public int _read() throws IOException {
+            int buffer = mainBuffer.append(-1);
+
+            if (buffer != -1){
+                return buffer;
+            } else if (mainBuffer.hasData()){
+                return _read();
+            } else {
+                strategy = flushingValue;
+                return read();
+            }
         }
     };
 
     private final StreamReadingStrategy lookingForToken = new StreamReadingStrategy() {
         public int _read() throws IOException {
             int stream = superRead();
+            int buffer = mainBuffer.append(stream);
 
-            int buffer = -1;
             for (int i = 0; i < tokenBuffers.length; i++) {
                 ScanBuffer tokenBuffer = tokenBuffers[i];
-                buffer = tokenBuffer.append(stream);
+                tokenBuffer.append(stream);
 
                 if (tokenBuffer.match()) {
                     clearAllBuffers();
 
                     String token = tokenBuffer.getScanString();
-                    value = handler.processToken(token);
-                    strategy = flushingValue;
+                    mainBuffer.clear(token.length());
 
-                    return (buffer == -1 && stream != -1) ? read() : buffer;
+                    value = handler.processToken(token);
+
+                    if (mainBuffer.hasData()){
+                        strategy = flushingMainBuffer;
+                    } else {
+                        strategy = flushingValue;
+                    }
+
+                    return (buffer != -1)? buffer: read();
                 }
             }
 
@@ -87,7 +109,8 @@ public class FixedTokenListReplacementInputStream extends FilterInputStream {
             // data coming from the stream is valid, we
             // need to just keep reading till the buffer
             // gives us good data.
-            return (buffer == -1 && largestBuffer.hasData()) ? _read() : buffer;
+            int i = (buffer == -1 && mainBuffer.hasData()) ? _read() : buffer;
+            return i;
         }
     };
 

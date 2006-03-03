@@ -8,110 +8,158 @@ package org.codehaus.swizzle;
 
 import junit.framework.TestCase;
 
-import java.io.InputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Map;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ReplaceStringsInputStreamTest extends TestCase {
 
     public void testTokenFilterInputStream() throws Exception {
         String original = "";
         String expected = "";
-
-        original = "some FOO text";
-        expected = "some apple text";
         swizzleAndAssert(original, expected);
 
-        original = "FOO text";
-        expected = "apple text";
+        original = "x";
+        expected = "x";
         swizzleAndAssert(original, expected);
 
-        original = ".FOO text";
-        expected = ".apple text";
+        original = "abcdefghijklmnop";
+        expected = "abcdefghijklmnop";
         swizzleAndAssert(original, expected);
 
-        original = "some text FOO";
-        expected = "some text apple";
+        original = "RED";
+        expected = "pear";
         swizzleAndAssert(original, expected);
 
-        original = "some text FOO.";
-        expected = "some text apple.";
+        original = "aRED";
+        expected = "apear";
         swizzleAndAssert(original, expected);
 
-        original = "FOO";
-        expected = "apple";
+        original = "REDb";
+        expected = "pearb";
         swizzleAndAssert(original, expected);
 
-        original = "some FOOO text";
-        expected = "some appleO text";
+        original = "aREDz";
+        expected = "apearz";
         swizzleAndAssert(original, expected);
 
-        original = "some text";
-        expected = "some text";
+        original = "abREDz";
+        expected = "abpearz";
         swizzleAndAssert(original, expected);
 
-        original = "";
-        expected = "";
+        original = "abREDyz";
+        expected = "abpearyz";
         swizzleAndAssert(original, expected);
 
-        original = "some FO text";
-        expected = "some FO text";
+        original = "abcREDwxyz";
+        expected = "abcpearwxyz";
         swizzleAndAssert(original, expected);
 
-        original = "FO some text";
-        expected = "FO some text";
+        original = "abcdREDwxyz";
+        expected = "abcdpearwxyz";
         swizzleAndAssert(original, expected);
 
-        original = "some text FO";
-        expected = "some text FO";
+        original = "abcdeREDwxyz";
+        expected = "abcdepearwxyz";
         swizzleAndAssert(original, expected);
 
-        original = "some FOO FOO text";
-        expected = "some apple apple text";
+        original = "abcdefghiREDwxyz";
+        expected = "abcdefghipearwxyz";
         swizzleAndAssert(original, expected);
 
-        original = "FOO text FOO";
-        expected = "apple text apple";
+        original = "abcdefghiREDstuvwxyz";
+        expected = "abcdefghipearstuvwxyz";
         swizzleAndAssert(original, expected);
 
-        original = "FOOFOO";
-        expected = "appleapple";
+        original = "REDBLUE";
+        expected = "pearbanana";
         swizzleAndAssert(original, expected);
 
-        original = "BAsome FOOO text";
-        expected = "BAsome appleO text";
+        original = "aREDBLUE";
+        expected = "apearbanana";
         swizzleAndAssert(original, expected);
 
-        original = "BARFOOFOOBAR text";
-        expected = "orangeappleappleorange text";
+        original = "REDBLUEb";
+        expected = "pearbananab";
         swizzleAndAssert(original, expected);
 
-        original = "BAR some FOO BAR test FOO";
-        expected = "orange some apple orange test apple";
+        original = "aREDzBLUE";
+        expected = "apearzbanana";
         swizzleAndAssert(original, expected);
 
-        original = "package org.apache.maven.archetype;";
-        expected = "package ${package};";
+        original = "BLUEabREDz";
+        expected = "bananaabpearz";
+        swizzleAndAssert(original, expected);
 
-        InputStream in = TestUtil.stringToStream(original);
-        in = new ReplaceStringInputStream(in, "org.apache.maven.archetype", "${package}");
-        String actual = TestUtil.streamToString(in);
+        original = "abBLUEREDyzGREEN";
+        expected = "abbananapearyzgrape";
+        swizzleAndAssert(original, expected);
 
-        assertEquals(expected, actual);
+        original = "abcdefghiGREENjklREDwxyz";
+        expected = "abcdefghigrapejklpearwxyz";
+        swizzleAndAssert(original, expected);
+
+        original = "abcGREENGREENdeBLUEBLUEfGREENBLUEghiREDstuvwxyz";
+        expected = "abcgrapegrapedebananabananafgrapebananaghipearstuvwxyz";
+        swizzleAndAssert(original, expected);
+
+
     }
 
     private void swizzleAndAssert(String original, String expected) throws IOException {
         InputStream in = TestUtil.stringToStream(original);
 
         Map strings = new HashMap();
-        strings.put("FOO", "apple");
-        strings.put("BAR", "orange");
+        strings.put("GREEN", "grape");
+        strings.put("RED", "pear");
+        strings.put("BLUE", "banana");
         in = new ReplaceStringsInputStream(in, strings);
 
         String actual = TestUtil.streamToString(in);
 
         assertEquals(expected, actual);
+    }
+
+    public void testFileStreamReplacement() throws Exception {
+        Map strings = new HashMap();
+        strings.put("java", "org.java");
+        strings.put("org.codehaus", "biz.codehizzle");
+        strings.put("Copyright", "Copyrizzle");
+        strings.put("public", "private");
+        strings.put("private", "public");
+        strings.put("Token", "ParsedString");
+        strings.put("token", "parsedString");
+        strings.put("parent", "parentURL");
+        strings.put("Url", "URL");
+        strings.put("begin", "startText");
+        strings.put("link", "location");
+
+
+        File original = new File("target/test-classes/fixedtoken/ResolveUrlInputStream.original.java");
+        File expected = new File("target/test-classes/fixedtoken/ResolveUrlInputStream.expected.java");
+        File actual = new File("target/test-classes/fixedtoken/ResolveUrlInputStream.actual.java");
+
+        InputStream in = new FileInputStream(original);
+        in = new ReplaceStringsInputStream(in, strings);
+
+        FileOutputStream out = new FileOutputStream(actual);
+
+        int b = in.read();
+        while (b != -1) {
+            out.write(b);
+            b = in.read();
+        }
+        in.close();
+        out.close();
+
+
+        String expectedContent = TestUtil.streamToString(new FileInputStream(expected));
+        String actualContent = TestUtil.streamToString(new FileInputStream(actual));
+        assertEquals(expectedContent, actualContent);
     }
 
 }

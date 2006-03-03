@@ -33,6 +33,8 @@ public class ScanBuffer {
         buffer = new char[size];
         buffer2 = new int[size];
         token = new char[size];
+        flush();
+        cs = true;
     }
 
     public ScanBuffer(String scanString, boolean caseSensitive) {
@@ -43,7 +45,11 @@ public class ScanBuffer {
     public int size() {
         return buffer.length;
     }
-    
+
+    public String toString() {
+        return super.toString()+"#"+getScanString()+" # buffer="+new String(buffer);
+    }
+
     public void resetPosition() {
         pos = 0;
     }
@@ -142,5 +148,35 @@ public class ScanBuffer {
 
     private void log(String str) {
         System.out.println("[Scan] " + str);
+    }
+
+    public void clear(int i) {
+        char NULL = (char) -1;
+
+        // Absolute position (apos) is the number of characters actually searched.
+        // This number should never exceed the length of the token.
+        int apos = i - 1;
+
+        // The relative position indicates where we are on the buffer.
+        // It is possible to reach the end of the buffer before we are
+        // finished searching enough characters.  In this contition we
+        // wrap to the beginning of the buffer and continue matching
+        // the remaining chars of the token array against the buffer.
+        int rpos = pos - 1;
+
+        // We start the search, possibly from the middle of the buffer,
+        // and go as far as we can.  We will either come to the end of the
+        // token or the end of the buffer. If we come to the end of the
+        // buffer the next for loop wil naturally pick up at the beginning
+        // of the buffer and continue matching where we left off in the
+        // token array.
+        for (; rpos > -1 && apos > -1; rpos--, apos--) {
+            buffer[rpos] = NULL;
+            buffer2[rpos] = -1;
+        }
+        for (rpos = buffer.length - 1; apos > -1; rpos--, apos--) {
+            buffer[rpos] = NULL;
+            buffer2[rpos] = -1;
+        }
     }
 }
