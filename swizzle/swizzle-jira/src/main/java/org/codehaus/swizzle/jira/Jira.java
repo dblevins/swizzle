@@ -88,17 +88,17 @@ public class Jira {
     }
 
     /**
-     * Returns all comments associated with the issue
+     * List<{@link Comment}>:  Returns all comments associated with the issue
      */
-    public Object getComments(String issueKey) throws Exception {
+    public List getComments(String issueKey) throws Exception {
         Vector vector = (Vector) call("getComments", issueKey);
         return toList(vector, Comment.class);
     }
 
     /**
-     * Returns all components available in the specified project
+     * List<{@link Component}>:  Returns all components available in the specified project
      */
-    public Object getComponents(String projectKey) throws Exception {
+    public List getComponents(String projectKey) throws Exception {
         Vector vector = (Vector) call("getComponents", projectKey);
         return toList(vector, Component.class);
     }
@@ -112,65 +112,65 @@ public class Jira {
     }
 
     /**
-     * Executes a saved filter
+     * List<{@link Issue}>:  Executes a saved filter
      */
-    public Object getIssuesFromFilter(String filterId) throws Exception {
+    public List getIssuesFromFilter(String filterId) throws Exception {
         Vector vector = (Vector) call("getIssuesFromFilter");
         return toList(vector, Issue.class);
     }
 
     /**
-     * Find issues using a free text search
+     * List<{@link Issue}>:  Find issues using a free text search
      */
-    public Object getIssuesFromTextSearch(String searchTerms) throws Exception {
+    public List getIssuesFromTextSearch(String searchTerms) throws Exception {
         Vector vector = (Vector) call("getIssuesFromTextSearch", searchTerms);
         return toList(vector, Issue.class);
     }
 
     /**
-     * Find issues using a free text search, limited to certain projects
+     * List<{@link Issue}>:  Find issues using a free text search, limited to certain projects
      */
-    public Object getIssuesFromTextSearchWithProject(Vector projectKeys, String searchTerms, int maxNumResults) throws Exception {
+    public List getIssuesFromTextSearchWithProject(Vector projectKeys, String searchTerms, int maxNumResults) throws Exception {
         Vector vector = (Vector) call("getIssuesFromTextSearchWithProject", projectKeys, searchTerms, new Integer(maxNumResults));
         return toList(vector, Issue.class);
     }
 
     /**
-     * Returns all visible issue types in the system
+     * List<{@link IssueType}>:  Returns all visible issue types in the system
      */
-    public Object getIssueTypes() throws Exception {
+    public List getIssueTypes() throws Exception {
         Vector vector = (Vector) call("getIssueTypes");
         return toList(vector, IssueType.class);
     }
 
     /**
-     * Returns all priorities in the system
+     * List<{@link Priority}>:  Returns all priorities in the system
      */
-    public Object getPriorities() throws Exception {
+    public List getPriorities() throws Exception {
         Vector vector = (Vector) call("getPriorities");
         return toList(vector, Priority.class);
     }
 
     /**
-     * Returns a list of projects available to the user
+     * List<{@link Project}>:  Returns a list of projects available to the user
      */
-    public Object getProjects() throws Exception {
+    public List getProjects() throws Exception {
         Vector vector = (Vector) call("getProjects");
         return toList(vector, Project.class);
     }
 
     /**
-     * Returns all resolutions in the system
+     * List<{@link Resolution}>:  Returns all resolutions in the system
      */
-    public Object getResolutions() throws Exception {
+    public List getResolutions() throws Exception {
         Vector vector = (Vector) call("getResolutions");
         return toList(vector, Resolution.class);
     }
 
     /**
-     * Gets all saved filters available for the currently logged in user
+     * List<{@link Filter}>:  Gets all saved filters available for the currently logged in user
      */
-    public Object getSavedFilters() throws Exception {
+    public List getSavedFilters() throws Exception {
         Vector vector = (Vector) call("getSavedFilters");
         return toList(vector, Filter.class);
     }
@@ -178,23 +178,25 @@ public class Jira {
     /**
      * Returns the Server information such as baseUrl, version, edition, buildDate, buildNumber.
      */
-    public Object getServerInfo() throws Exception {
+    public ServerInfo getServerInfo() throws Exception {
         Hashtable data = (Hashtable) call("getServerInfo");
         return new ServerInfo(data);
     }
 
     /**
-     * Returns all statuses in the system
+     * List<{@link Status}>:  Returns all statuses in the system
      */
-    public Object getStatuses() throws Exception {
+    public List getStatuses() throws Exception {
         Vector vector = (Vector) call("getStatuses");
         return toList(vector, Status.class);
     }
 
     /**
-     * Returns all visible subtask issue types in the system
+     * List<{@link IssueType}>:  Returns all visible subtask issue types in the system
+     *
+     * @return list of {@link IssueType}
      */
-    public Object getSubTaskIssueTypes() throws Exception {
+    public List getSubTaskIssueTypes() throws Exception {
         Vector vector = (Vector) call("getSubTaskIssueTypes");
         return toList(vector, IssueType.class);
     }
@@ -202,15 +204,15 @@ public class Jira {
     /**
      * Returns a user's information given a username
      */
-    public Object getUser(String username) throws Exception {
+    public User getUser(String username) throws Exception {
         Hashtable data = (Hashtable) call("getUser", username);
         return new User(data);
     }
 
     /**
-     * Returns all versions available in the specified project
+     * List<{@link Version}>:  Returns all versions available in the specified project
      */
-    public Object getVersions(String projectKey) throws Exception {
+    public List getVersions(String projectKey) throws Exception {
         Vector vector = (Vector) call("getVersions", projectKey);
         return toList(vector, Version.class);
     }
