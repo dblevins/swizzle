@@ -106,7 +106,7 @@ public class Page extends PageSummary {
     }
 
     /**
-     * status of the page (eg. current or deleted)
+     * status of the page (eg current or deleted)
      */
     public String getContentStatus() {
         return getString("contentStatus");

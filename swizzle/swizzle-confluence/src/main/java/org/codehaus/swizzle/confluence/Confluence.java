@@ -61,7 +61,7 @@ public class Confluence {
     }
 
     /**
-     * returns all the SpaceSummaries that the current user can see.
+     * returns all the {@link SpaceSummary} instances that the current user can see.
      */
     public List getSpaces() throws Exception {
         Vector vector = (Vector) call("getSpaces");
@@ -99,7 +99,7 @@ public class Confluence {
     }
 
     /**
-     * returns all the PageSummaries in the space. Doesn't include pages which are in the Trash. Equivalent to calling {{Space.getCurrentPages()}}.
+     * returns all the {@link PageSummary} instances in the space. Doesn't include pages which are in the Trash. Equivalent to calling {{Space.getCurrentPages()}}.
      */
     public List getPages(String spaceKey) throws Exception {
         Vector vector = (Vector) call("getPages", spaceKey);
@@ -123,7 +123,7 @@ public class Confluence {
     }
 
     /**
-     * returns all the PageHistorySummaries - useful for looking up the previous versions of a page, and who changed them.
+     * returns all the {@link PageHistorySummary} instances - useful for looking up the previous versions of a page, and who changed them.
      */
     public List getPageHistory(String pageId) throws Exception {
         Vector vector = (Vector) call("getPageHistory", pageId);
@@ -131,7 +131,7 @@ public class Confluence {
     }
 
     /**
-     * returns all the Attachments for this page (useful to point users to download them with the full file download URL returned).
+     * returns all the {@link Attachment}s for this page (useful to point users to download them with the full file download URL returned).
      */
     public List getAttachments(String pageId) throws Exception {
         Vector vector = (Vector) call("getAttachments", pageId);
@@ -139,7 +139,7 @@ public class Confluence {
     }
 
     /**
-     * returns all the ancestors (as PageSummaries) of this page (parent, parent's parent etc).
+     * returns all the ancestors (as {@link PageSummary} instances) of this page (parent, parent's parent etc).
      */
     public List getAncestors(String pageId) throws Exception {
         Vector vector = (Vector) call("getAncestors", pageId);
@@ -147,7 +147,7 @@ public class Confluence {
     }
 
     /**
-     * returns all the direct children (as PageSummaries) of this page.
+     * returns all the direct children (as {@link PageSummary} instances) of this page.
      */
     public List getChildren(String pageId) throws Exception {
         Vector vector = (Vector) call("getChildren", pageId);
@@ -155,7 +155,7 @@ public class Confluence {
     }
 
     /**
-     * returns all the descendents (as PageSummaries) of this page (children, children's children etc).
+     * returns all the descendents (as {@link PageSummary} instances) of this page (children, children's children etc).
      */
     public List getDescendents(String pageId) throws Exception {
         Vector vector = (Vector) call("getDescendents", pageId);
@@ -163,7 +163,7 @@ public class Confluence {
     }
 
     /**
-     * returns all the comments for this page.
+     * returns all the {@link Comment}s for this page.
      */
     public List getComments(String pageId) throws Exception {
         Vector vector = (Vector) call("getComments", pageId);
@@ -263,7 +263,7 @@ public class Confluence {
     }
 
     /**
-     * returns all the BlogEntrySummaries in the space.
+     * returns all the {@link BlogEntrySummary} instances in the space.
      */
     public List getBlogEntries(String spaceKey) throws Exception {
         Vector vector = (Vector) call("getBlogEntries", spaceKey);
@@ -295,7 +295,7 @@ public class Confluence {
     }
 
     /**
-     * return a list of SearchResults which match a given search query (including pages and other content types). This is the same as a performing a parameterised search (see below) with an empty parameter map.
+     * return a list of {@link SearchResult}s which match a given search query (including pages and other content types). This is the same as a performing a parameterised search (see below) with an empty parameter map.
      */
     public List search(String query, int maxResults) throws Exception {
         Vector vector = (Vector) call("search", query, new Integer(maxResults));
@@ -303,7 +303,7 @@ public class Confluence {
     }
 
     /**
-     * (*since 1.3*) like the previous search, but you can optionally limit your search by adding parameters to the parameter map. If you do not include a parameter, the default is used instead.
+     * Returns a list of {@link SearchResult}s like the previous search, but you can optionally limit your search by adding parameters to the parameter map. If you do not include a parameter, the default is used instead.
      */
     public List search(String query, Map parameters, int maxResults) throws Exception {
         Vector vector = (Vector) call("search", query, parameters, new Integer(maxResults));
@@ -311,7 +311,7 @@ public class Confluence {
     }
 
     /**
-     * Returns a Vector of Strings representing the permissions the current user has for this space (a list of "view", "modify", "comment" and / or "admin").
+     * Returns a List of {@link Permission}s representing the permissions the current user has for this space (a list of "view", "modify", "comment" and / or "admin").
      */
     public List getPermissions(String spaceKey) throws Exception {
         Vector vector = (Vector) call("getPermissions", spaceKey);
@@ -319,7 +319,7 @@ public class Confluence {
     }
 
     /**
-     * Returns a Vector of Strings representing the permissions the given user has for this space. (since 2.1.4)
+     * Returns a List of {@link Permission}s representing the permissions the given user has for this space. (since 2.1.4)
      */
     public List getPermissionsForUser(String spaceKey, String userName) throws Exception {
         Vector vector = (Vector) call("getPermissionsForUser", spaceKey, userName);
@@ -327,7 +327,7 @@ public class Confluence {
     }
 
     /**
-     * Returns a Vector of Permissions representing the permissions set on the given page.
+     * Returns a List of {@link Permission}s representing the permissions set on the given page.
      */
     public List getPagePermissions(String pageId) throws Exception {
         Vector vector = (Vector) call("getPagePermissions", pageId);
@@ -335,7 +335,7 @@ public class Confluence {
     }
 
     /**
-     * returns all of the space level permissions which may be granted. This is a list of possible permissions to use with {{addPermissionToSpace}}, below, not a list of current permissions on a Space.
+     * returns List of the space level {@link Permission}s which may be granted. This is a list of possible permissions to use with {{addPermissionToSpace}}, below, not a list of current permissions on a Space.
      */
     public List getSpaceLevelPermissions() throws Exception {
         Vector vector = (Vector) call("getSpaceLevelPermissions");
@@ -421,7 +421,7 @@ public class Confluence {
     }
 
     /**
-     * get a user's current groups
+     * get a user's current groups as a list of {@link String}s
      */
     public List getUserGroups(String username) throws Exception {
         Vector vector = (Vector) call("getUserGroups", username);
@@ -460,7 +460,7 @@ public class Confluence {
     }
 
     /**
-     * gets all groups
+     * gets all groups as a list of {@link String}s
      */
     public List getGroups() throws Exception {
         Vector vector = (Vector) call("getGroups");
@@ -508,7 +508,7 @@ public class Confluence {
     }
 
     /**
-     * returns all registered users
+     * returns all registered {@link User}s
      */
     public List getActiveUsers(boolean viewAll) throws Exception {
         Vector vector = (Vector) call("getActiveUsers", new Boolean(viewAll));
@@ -548,7 +548,7 @@ public class Confluence {
     }
 
     /**
-     * Returns all Labels for the given ContentEntityObject ID
+     * Returns all {@link Label}s for the given ContentEntityObject ID
      */
     public List getLabelsById(long objectId) throws Exception {
         Vector vector = (Vector) call("getLabelsById", new Long(objectId));
@@ -556,7 +556,7 @@ public class Confluence {
     }
 
     /**
-     * Returns the most popular Labels for the Confluence instance, with a specified maximum number.
+     * Returns the most popular {@link Label}s for the Confluence instance, with a specified maximum number.
      */
     public List getMostPopularLabels(int maxCount) throws Exception {
         Vector vector = (Vector) call("getMostPopularLabels", new Integer(maxCount));
@@ -564,7 +564,7 @@ public class Confluence {
     }
 
     /**
-     * Returns the most popular Labels for the given {{spaceKey}}, with a specified maximum number of results.
+     * Returns the most popular {@link Label}s for the given {{spaceKey}}, with a specified maximum number of results.
      */
     public List getMostPopularLabelsInSpace(String spaceKey, int maxCount) throws Exception {
         Vector vector = (Vector) call("getMostPopularLabelsInSpace", spaceKey, new Integer(maxCount));
@@ -572,7 +572,7 @@ public class Confluence {
     }
 
     /**
-     * Returns the recently used Labels for the Confluence instance, with a specified maximum number of results.
+     * Returns the recently used {@link Label}s for the Confluence instance, with a specified maximum number of results.
      */
     public List getRecentlyUsedLabels(int maxResults) throws Exception {
         Vector vector = (Vector) call("getRecentlyUsedLabels", new Integer(maxResults));
@@ -580,7 +580,7 @@ public class Confluence {
     }
 
     /**
-     * Returns the recently used Labels for the given {{spaceKey}}, with a specified maximum number of results.
+     * Returns the recently used {@link Label}s for the given {{spaceKey}}, with a specified maximum number of results.
      */
     public List getRecentlyUsedLabelsInSpace(String spaceKey, int maxResults) throws Exception {
         Vector vector = (Vector) call("getRecentlyUsedLabelsInSpace", spaceKey, new Integer(maxResults));
@@ -588,7 +588,7 @@ public class Confluence {
     }
 
     /**
-     * Returns an array of Spaces that have been labelled with {{labelName}}.
+     * Returns an array of {@link Space}s that have been labelled with {{labelName}}.
      */
     public List getSpacesWithLabel(String labelName) throws Exception {
         Vector vector = (Vector) call("getSpacesWithLabel", labelName);
@@ -596,7 +596,7 @@ public class Confluence {
     }
 
     /**
-     * Returns the Labels related to the given label name, with a specified maximum number of results.
+     * Returns the {@link Label}s related to the given label name, with a specified maximum number of results.
      */
     public List getRelatedLabels(String labelName, int maxResults) throws Exception {
         Vector vector = (Vector) call("getRelatedLabels", labelName, new Integer(maxResults));
@@ -604,7 +604,7 @@ public class Confluence {
     }
 
     /**
-     * Returns the Labels related to the given label name for the given {{spaceKey}}, with a specified maximum number of results.
+     * Returns the {@link Label}s related to the given label name for the given {{spaceKey}}, with a specified maximum number of results.
      */
     public List getRelatedLabelsInSpace(String labelName, String spaceKey, int maxResults) throws Exception {
         Vector vector = (Vector) call("getRelatedLabelsInSpace", labelName, spaceKey, new Integer(maxResults));
@@ -612,7 +612,7 @@ public class Confluence {
     }
 
     /**
-     * Retrieves the Labels matching the given {{labelName}}, {{namespace}}, {{spaceKey}} or {{owner}}.
+     * Retrieves the {@link Label}s matching the given {{labelName}}, {{namespace}}, {{spaceKey}} or {{owner}}.
      */
     public List getLabelsByDetail(String labelName, String namespace, String spaceKey, String owner) throws Exception {
         Vector vector = (Vector) call("getLabelsByDetail", labelName, namespace, spaceKey, owner);
