@@ -16,66 +16,35 @@
  */
 package org.codehaus.swizzle.stream;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
-/**
- * @version $Revision$ $Date$
- */
 public class StringTemplate {
-    private static final Pattern expr = Pattern.compile("\\{([^}]*)\\}");
 
-    private final String[] tokens;
-    private final String mask;
-    private final Pattern[] patterns;
+    private final String template;
 
-    public StringTemplate(String mask) {
-        this.mask = mask;
-        this.tokens = getTokens(mask);
-        this.patterns = getPatterns(tokens);
+    public StringTemplate(String template) {
+        this.template = template;
     }
 
-    /**
-     * Pull tokens one at a time and replace
-     * them on the string (loop)
-     * <p/>
-     * Notice that when referenced data is pulled from the
-     * context, we don't apply a related StringTemplate.  This could
-     * cause a circular reference and is complicated to code.
-     * We are just skipping this feature for the moment.
-     */
     public String apply(Map context) {
-        String data = mask;
+        InputStream in = new ByteArrayInputStream(template.getBytes());
+        in = new ReplaceVariablesInputStream(in, "{", "}", context);
+        StringWriter stringWriter = new StringWriter(template.length() * 2);
+
         try {
-            synchronized (context) {
-                for (int i = 0; i < tokens.length; i++) {
-                    Matcher matcher = patterns[i].matcher(data);
-                    data = matcher.replaceAll((String) context.get(tokens[i]));
-                }
+            int i = in.read();
+            while (i != -1) {
+                stringWriter.write(i);
+                i = in.read();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            stringWriter.close();
+            return stringWriter.toString();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to apply the template '" + template + "'", e);
         }
-        return data;
-    }
-
-    private String[] getTokens(String str) {
-        List tokens = new ArrayList();
-        Matcher matcher = expr.matcher(str);
-        while (matcher.find()) {
-            tokens.add(matcher.group(1));
-        }
-        return (String[]) tokens.toArray(new String[]{});
-    }
-
-    private Pattern[] getPatterns(String[] tokens) {
-        Pattern[] patterns = new Pattern[tokens.length];
-        for (int i = 0; i < patterns.length; i++) {
-            patterns[i] = Pattern.compile("\\{" + tokens[i] + "\\}");
-        }
-        return patterns;
     }
 }
