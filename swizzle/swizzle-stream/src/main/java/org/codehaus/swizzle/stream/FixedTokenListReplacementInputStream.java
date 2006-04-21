@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.codehaus.swizzle;
+package org.codehaus.swizzle.stream;
 
 import java.io.FilterInputStream;
 import java.io.InputStream;

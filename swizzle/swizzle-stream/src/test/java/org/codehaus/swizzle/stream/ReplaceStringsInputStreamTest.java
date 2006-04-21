@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.codehaus.swizzle;
+package org.codehaus.swizzle.stream;
 
 import junit.framework.TestCase;
 
@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.codehaus.swizzle.stream.ReplaceStringsInputStream;
 
 public class ReplaceStringsInputStreamTest extends TestCase {
 

@@ -15,7 +15,10 @@
  *  limitations under the License.
  */
 
-package org.codehaus.swizzle;
+package org.codehaus.swizzle.stream;
+
+import org.codehaus.swizzle.stream.DelimitedTokenReplacementInputStream;
+import org.codehaus.swizzle.stream.MappedTokenHandler;
 
 import java.io.InputStream;
 import java.util.Map;

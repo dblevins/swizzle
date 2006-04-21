@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.codehaus.swizzle;
+package org.codehaus.swizzle.stream;
 /**
  * @version $Revision$ $Date$
  */
@@ -26,8 +26,8 @@ import java.io.InputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.Map;
-import java.util.HashMap;
+
+import org.codehaus.swizzle.stream.ReplaceStringInputStream;
 
 public class ReplaceStringInputStreamTest extends TestCase {
 

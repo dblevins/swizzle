@@ -17,9 +17,9 @@
 package org.codehaus.swizzle.rss;
 
 import org.codehaus.swizzle.rss.NewsGrabber;
-import org.codehaus.swizzle.IncludeFilterInputStream;
-import org.codehaus.swizzle.ExcludeFilterInputStream;
-import org.codehaus.swizzle.ResolveUrlInputStream;
+import org.codehaus.swizzle.stream.IncludeFilterInputStream;
+import org.codehaus.swizzle.stream.ExcludeFilterInputStream;
+import org.codehaus.swizzle.stream.ResolveUrlInputStream;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.codehaus.swizzle;
+package org.codehaus.swizzle.stream;
 /**
  * @version $Revision$ $Date$
  */
@@ -24,6 +24,8 @@ import junit.framework.TestCase;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
+import org.codehaus.swizzle.stream.ResolveUrlInputStream;
 
 public class ResolveUrlInputStreamTest extends TestCase {
 
@@ -64,7 +66,7 @@ public class ResolveUrlInputStreamTest extends TestCase {
     private String resolveURLs(String original, URL url) throws IOException {
         InputStream in = TestUtil.stringToStream(original);
         in = new ResolveUrlInputStream(in, "<A HREF=", ">", url);
-        in = new ResolveUrlInputStream(in, "SRC=\"", "\"", url);
+        in = new org.codehaus.swizzle.stream.ResolveUrlInputStream(in, "SRC=\"", "\"", url);
 
         return TestUtil.streamToString(in);
     }

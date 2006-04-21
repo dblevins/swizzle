@@ -14,7 +14,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.codehaus.swizzle;
+package org.codehaus.swizzle.stream;
+
+import org.codehaus.swizzle.stream.DelimitedTokenReplacementInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;

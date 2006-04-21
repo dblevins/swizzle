@@ -14,12 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.codehaus.swizzle;
+package org.codehaus.swizzle.stream;
 
 import java.io.FilterInputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import java.util.Map;
 
 public class DelimitedTokenReplacementInputStream extends FilterInputStream {
 
@@ -31,7 +30,7 @@ public class DelimitedTokenReplacementInputStream extends FilterInputStream {
     public DelimitedTokenReplacementInputStream(InputStream in, String begin, String end, StreamTokenHandler tokenHandler) {
         this(in, begin, end, tokenHandler, true);
     }
-    
+
     public DelimitedTokenReplacementInputStream(InputStream in, String begin, String end, StreamTokenHandler tokenHandler, boolean caseSensitive) {
         super(in);
         this.handler = tokenHandler;
