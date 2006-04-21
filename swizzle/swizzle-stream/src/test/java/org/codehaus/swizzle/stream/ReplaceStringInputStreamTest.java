@@ -135,9 +135,9 @@ public class ReplaceStringInputStreamTest extends TestCase {
     }
 
     public void testFileStreamReplacement() throws Exception {
-        File original = new File("target/test-classes/fixedtoken/PipedTokenReplacement.original.java");
-        File expected = new File("target/test-classes/fixedtoken/PipedTokenReplacement.expected.java");
-        File actual = new File("target/test-classes/fixedtoken/PipedTokenReplacement.actual.java");
+        File original = new File("target/test-classes/fixedtoken/PipedTokenReplacement.original.java.txt");
+        File expected = new File("target/test-classes/fixedtoken/PipedTokenReplacement.expected.java.txt");
+        File actual = new File("target/test-classes/fixedtoken/PipedTokenReplacement.actual.java.txt");
 
         // Notice that this output results in all varaibles and accessors
         // being scoped at "public".  This is a piped setup, so the output

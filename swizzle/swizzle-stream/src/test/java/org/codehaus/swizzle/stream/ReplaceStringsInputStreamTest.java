@@ -152,9 +152,9 @@ public class ReplaceStringsInputStreamTest extends TestCase {
         strings.put("link", "location");
 
 
-        File original = new File("target/test-classes/fixedtoken/ResolveUrlInputStream.original.java");
-        File expected = new File("target/test-classes/fixedtoken/ResolveUrlInputStream.expected.java");
-        File actual = new File("target/test-classes/fixedtoken/ResolveUrlInputStream.actual.java");
+        File original = new File("target/test-classes/fixedtoken/ResolveUrlInputStream.original.java.txt");
+        File expected = new File("target/test-classes/fixedtoken/ResolveUrlInputStream.expected.java.txt");
+        File actual = new File("target/test-classes/fixedtoken/ResolveUrlInputStream.actual.java.txt");
 
         InputStream in = new FileInputStream(original);
         in = new ReplaceStringsInputStream(in, strings);

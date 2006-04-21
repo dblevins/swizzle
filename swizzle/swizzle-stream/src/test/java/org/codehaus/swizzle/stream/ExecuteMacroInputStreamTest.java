@@ -32,7 +32,7 @@ public class ExecuteMacroInputStreamTest extends TestCase {
         macros.put("wget", new ExecuteMacroInputStream.IncludeUrlMacro());
         macros.put("file", new ExecuteMacroInputStream.IncludeFileMacro());
 
-        String original = "Some template {date:tz=PST}.  With some web content {wget:url=file:target/test-classes/fuzzbucket/widget.txt} and \n{file:path=target/test-classes/fuzzbucket/DoHickey.java}";
+        String original = "Some template {date:tz=PST}.  With some web content {wget:url=file:target/test-classes/fuzzbucket/widget.txt} and \n{file:path=target/test-classes/fuzzbucket/DoHickey.java.txt}";
 
         InputStream in = TestUtil.stringToStream(original);
         in = new ExecuteMacroInputStream(in, "{","}", macros);
